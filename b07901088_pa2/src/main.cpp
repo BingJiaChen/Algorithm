@@ -24,16 +24,16 @@ int main(int argc,char* argv[]){
     int start, end;
     fin>>buffer;
     vector<int> data(buffer,0);
-    vector<vector<int>> output;
+    vector<vector<int> > output;
     while(fin>>start>>end){
         data[start]=end;
         data[end]=start;
     }
     // cout<<data.size()<<endl;
     MPS(data,output);
-    vector<vector<int>> result(output.size()+1,{0,0});
+    vector<vector<int> > result(output.size()+1);
     countingSort(output,result,data.size());
-    vector<vector<int>>::iterator itr;
+    vector<vector<int> >::iterator itr;
     fout<<output.size()<<endl;
     for (itr=result.begin()+1;itr!=result.end();itr++){
         fout<<(*itr)[0]<<" "<<(*itr)[1]<<endl;

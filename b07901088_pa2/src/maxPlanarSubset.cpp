@@ -3,9 +3,9 @@
 #include "maxPlanarSubset.h"
 using namespace std;
 
-int find_k(vector<vector<int>>& data,int j){
+int find_k(vector<vector<int> >& data,int j){
     int k = 0;
-    vector<vector<int>>::iterator itr;
+    vector<vector<int> >::iterator itr;
     for (itr=data.begin();itr!=data.end();itr++){
         if((*itr)[0]==j){
             k = (*itr)[1];
@@ -19,20 +19,33 @@ int find_k(vector<vector<int>>& data,int j){
     return k;
 }
 
-void getChord(int i,int j,vector<int>& data,vector<vector<int>>& output,vector<vector<int>>& record){
+void getChord(int i,int j,vector<int>& data,vector<vector<int> >& output,vector<vector<int> >& record){
     int N = data.size();
+    vector<int> temp(2);
     while(j-i>1){
         if(record[i][j]==1){
             int k = data[j];
-            if(j<k){output.push_back({j,k});}
-            else{output.push_back({k,j});}
+            if(j<k){
+                temp[0] = j;
+                temp[1] = k;
+                output.push_back(temp);}
+            else{
+                temp[0] = k;
+                temp[1] = j;
+                output.push_back(temp);}
             getChord(i+1,j-1,data,output,record);
             j = i-1;
         }
         else if(record[i][j]==2){
             int k = data[j];
-            if(j<k){output.push_back({j,k});}
-            else{output.push_back({k,j});}
+            if(j<k){
+                temp[0] = j;
+                temp[1] = k;
+                output.push_back(temp);}
+            else{
+                temp[0] = k;
+                temp[1] = j;
+                output.push_back(temp);}
             getChord(k,j-1,data,output,record);
             j = k-1;
         }
@@ -40,9 +53,9 @@ void getChord(int i,int j,vector<int>& data,vector<vector<int>>& output,vector<v
     }
 }
 
-void countingSort(vector<vector<int>>& data,vector<vector<int>>& output,int N){
+void countingSort(vector<vector<int> >& data,vector<vector<int> >& output,int N){
     int B[N] = {0};
-    vector<vector<int>>::iterator itr;
+    vector<vector<int> >::iterator itr;
     for (itr=data.begin();itr!=data.end();itr++){
         B[(*itr)[0]] = 1;
     }
@@ -56,10 +69,10 @@ void countingSort(vector<vector<int>>& data,vector<vector<int>>& output,int N){
 }
 
 
-void MPS(vector<int>& data,vector<vector<int>>& output){
+void MPS(vector<int>& data,vector<vector<int> >& output){
     int N = data.size();
-    vector<vector<int>> M;
-    vector<vector<int>> record;
+    vector<vector<int> > M;
+    vector<vector<int> > record;
     M.reserve(N);
     record.reserve(N);
     for(int i=0;i<N;i++){
