@@ -60,8 +60,8 @@ void MPS(vector<int>& data,vector<vector<int>>& output){
     int N = data.size();
     vector<vector<int>> M;
     vector<vector<int>> record;
-    // M.reserve(N);
-    // record.reserve(N);
+    M.reserve(N);
+    record.reserve(N);
     M.resize(N);
     record.resize(N);
     for(int i=0;i<N;i++){
