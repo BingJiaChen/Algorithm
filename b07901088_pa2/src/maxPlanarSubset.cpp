@@ -3,54 +3,37 @@
 #include "maxPlanarSubset.h"
 using namespace std;
 
-int find_k(vector<vector<int> >& data,int j){
-    int k = 0;
-    vector<vector<int> >::iterator itr;
-    for (itr=data.begin();itr!=data.end();itr++){
-        if((*itr)[0]==j){
-            k = (*itr)[1];
-            break;
-        }       
-        if((*itr)[1]==j){
-            k = (*itr)[0];
-            break;
-        }
-    }
-    return k;
-}
-
 void getChord(int i,int j,vector<int>& data,vector<vector<int> >& output,vector<vector<int> >& record){
-    int N = data.size();
     vector<int> temp(2);
-    while(j-i>1){
-        if(record[i][j]==1){
-            int k = data[j];
-            if(j<k){
-                temp[0] = j;
-                temp[1] = k;
-                output.push_back(temp);}
-            else{
-                temp[0] = k;
-                temp[1] = j;
-                output.push_back(temp);}
-            getChord(i+1,j-1,data,output,record);
-            j = i-1;
-        }
-        else if(record[i][j]==2){
-            int k = data[j];
-            if(j<k){
-                temp[0] = j;
-                temp[1] = k;
-                output.push_back(temp);}
-            else{
-                temp[0] = k;
-                temp[1] = j;
-                output.push_back(temp);}
-            getChord(k,j-1,data,output,record);
-            j = k-1;
-        }
-        else{j--;}
+    if(i==j){return;}
+    if(record[i][j]==0){
+        getChord(i,j-1,data,output,record);
     }
+    else if(record[i][j]==1){
+        int k = data[j];
+        if(j<k){
+            temp[0] = j;
+            temp[1] = k;
+            output.push_back(temp);}
+        else{
+            temp[0] = k;
+            temp[1] = j;
+            output.push_back(temp);}
+        getChord(i+1,j-1,data,output,record);
+    }
+    else if(record[i][j]==2){
+        int k = data[j];
+        if(j<k){
+            temp[0] = j;
+            temp[1] = k;
+            output.push_back(temp);}
+        else{
+            temp[0] = k;
+            temp[1] = j;
+            output.push_back(temp);}
+        getChord(i,k-1,data,output,record);
+        getChord(k+1,j-1,data,output,record);
+    }   
 }
 
 void countingSort(vector<vector<int> >& data,vector<vector<int> >& output,int N){
@@ -68,6 +51,32 @@ void countingSort(vector<vector<int> >& data,vector<vector<int> >& output,int N)
     }
 }
 
+int MPS_DP(int i, int j, vector<int>& data, vector<vector<int> >& M,vector<vector<int> >& record){
+    int k = data[j];
+    if(i>=j){return 0;}
+    if(M[i][j]!=0){return M[i][j];}
+    if(k<i || k>j){
+        M[i][j] = MPS_DP(i,j-1,data,M,record);
+    }
+    else if(k==i){
+        record[i][j] = 1;
+        M[i][j] = MPS_DP(i+1,j-1,data,M,record)+1;
+    }
+    else{
+        M[i][j-1] = MPS_DP(i,j-1,data,M,record);
+        M[i][k-1] = MPS_DP(i,k-1,data,M,record);
+        M[k+1][j-1] = MPS_DP(k+1,j-1,data,M,record);
+        if(M[i][j-1]>=(M[i][k-1]+1+M[k+1][j-1])){
+            M[i][j] = M[i][j-1];
+        }
+        else{
+            record[i][j] = 2;
+            M[i][j] = M[i][k-1]+1+M[k+1][j-1];
+            }
+    }
+    return M[i][j];
+}
+
 
 void MPS(vector<int>& data,vector<vector<int> >& output){
     int N = data.size();
@@ -79,29 +88,7 @@ void MPS(vector<int>& data,vector<vector<int> >& output){
         M[i].reserve(N);
         record[i].reserve(N);
     }
-    int k = 0;
-    for(int l=1;l<N;l++){
-        for(int i=0;i<N-l;i++){
-            int j=i+l;
-            k = data[j];           
-            if(k<i || k>j){
-                M[i][j] = M[i][j-1];
-            } 
-            else if(k==i){
-                M[i][j] = M[i+1][j-1] + 1;
-                record[i][j] = 1;
-            }
-            else{
-                if(M[i][j-1]>=(M[i][k-1]+1+M[k+1][j-1])){
-                    M[i][j] = M[i][j-1];
-                }
-                else{
-                    M[i][j]=M[i][k-1]+1+M[k+1][j-1];
-                    record[i][j] = 2;
-                    }
-            }
-        }
-    }
+    MPS_DP(0,N-1,data,M,record);
     cout<<M[0][N-1]<<endl;
     getChord(0,N-1,data,output,record);
 }
