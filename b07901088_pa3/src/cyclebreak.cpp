@@ -278,14 +278,7 @@ void Graph::printAdj(){
 void Graph::countingSort(vector<vector<int> >& edges,int state){
     if(edges.size()==0) return;
     if(state==0){
-        // int C[this->V];
         vector<int> C(this->V,0);
-        // vector<vector<int> > B;
-        // B.reserve(edges.size());
-        // for(int i=0;i<edges.size();i++){
-        //     B[i].reserve(3);
-        //     cout<<i<<endl;
-        // }
         int B[edges.size()][3];
         vector<vector<int> >::iterator itr;
         for(itr=edges.begin();itr!=edges.end();itr++){
@@ -305,18 +298,9 @@ void Graph::countingSort(vector<vector<int> >& edges,int state){
             edges[i][1] = B[i][1];
             edges[i][2] = B[i][2];
         }
-        // for(itr=edges.begin();itr!=edges.end();itr++){
-        //     cout<<(*itr)[0]<<" "<<(*itr)[1]<<" "<<(*itr)[2]<<endl;
-        // }
     }
     if(state==2){
         vector<int> C(201,0);
-        // int C[201];
-        // vector<vector<int> > B;
-        // B.reserve(edges.size());
-        // for(int i=0;i<edges.size();i++){
-        //     B[i].reserve(3);
-        // }
         int B[edges.size()][3];
         vector<vector<int> >::iterator itr;
         for(itr=edges.begin();itr!=edges.end();itr++){
