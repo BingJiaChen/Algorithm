@@ -47,6 +47,7 @@ int main(int argc,char* argv[]){
         if(ans.size()==0) break;
         fout<<(*itr)[0]<<" "<<(*itr)[1]<<" "<<(*itr)[2]<<endl;    
     }
+    // fout<<"0"<<endl;
     fout.close();
     
     return 0;

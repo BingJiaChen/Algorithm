@@ -97,6 +97,7 @@ void Graph::Kruskal_MST(vector<vector<int> >& ans,int &cost){
         ans.push_back(temp);
     }
     countingSort(ans,0);
+    
 }
 //----------------------------------------------------------------------------------
 void Graph::removeEdge(int u, int v, int w){
@@ -277,12 +278,15 @@ void Graph::printAdj(){
 void Graph::countingSort(vector<vector<int> >& edges,int state){
     if(edges.size()==0) return;
     if(state==0){
+        // int C[this->V];
         vector<int> C(this->V,0);
-        vector<vector<int> > B;
-        B.reserve(edges.size());
-        for(int i=0;i<edges.size();i++){
-            B[i].reserve(3);
-        }
+        // vector<vector<int> > B;
+        // B.reserve(edges.size());
+        // for(int i=0;i<edges.size();i++){
+        //     B[i].reserve(3);
+        //     cout<<i<<endl;
+        // }
+        int B[edges.size()][3];
         vector<vector<int> >::iterator itr;
         for(itr=edges.begin();itr!=edges.end();itr++){
             C[(*itr)[0]] += 1;
@@ -307,11 +311,13 @@ void Graph::countingSort(vector<vector<int> >& edges,int state){
     }
     if(state==2){
         vector<int> C(201,0);
-        vector<vector<int> > B;
-        B.reserve(edges.size());
-        for(int i=0;i<edges.size();i++){
-            B[i].reserve(3);
-        }
+        // int C[201];
+        // vector<vector<int> > B;
+        // B.reserve(edges.size());
+        // for(int i=0;i<edges.size();i++){
+        //     B[i].reserve(3);
+        // }
+        int B[edges.size()][3];
         vector<vector<int> >::iterator itr;
         for(itr=edges.begin();itr!=edges.end();itr++){
             C[(*itr)[2]+100] += 1;
