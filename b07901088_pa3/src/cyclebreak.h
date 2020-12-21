@@ -28,11 +28,13 @@ class Graph{
         vector<vector<int> > Kruskal_MST(int&);
         void printAdj();
         void removeEdge(int,int,int);
-        void DFS(vector<vector<int> >&);
-        void DFS_back(int,Vertex vertices[], vector<vector<int> >&);
+        bool cycleDetect();
+        bool cycleDetect_DFS(int,Vertex vertices[]);
         int findWeight(int u , int v);
         void reset(Vertex[]);
         void cycleBreaking(vector<vector<int> >&,int&);
+        void addEdge(int,int,int);
+        bool checkAns();
 
     private:
         int V;

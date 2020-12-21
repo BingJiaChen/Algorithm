@@ -32,17 +32,19 @@ int main(int argc,char* argv[]){
     }
     fin.close();
     // ----------------------------------------read file-------------------------------------
-    vector<vector<int>> ans;
+    vector<vector<int> > ans;
     if(dir=='u'){
         ans = g.Kruskal_MST(cost);
     }
     if(dir=='d'){
         g.cycleBreaking(ans,cost);
+        if(g.checkAns()) cout<<"cycle breaking completly !!!"<<endl;
+        else cout<<"There are something wrong..."<<endl;
     }
-    // g.printAdj();
     fout<<cost<<endl;
-    vector<vector<int>>::iterator itr;
-    for(itr=ans.begin();itr!=ans.end();++itr){
+    vector<vector<int> >::iterator itr;
+    for(itr=ans.begin();itr!=ans.end();itr++){
+        if(ans.size()==0) break;
         fout<<(*itr)[0]<<" "<<(*itr)[1]<<" "<<(*itr)[2]<<endl;
     }
     fout.close();

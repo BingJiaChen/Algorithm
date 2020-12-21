@@ -97,7 +97,16 @@ void Graph::removeEdge(int u, int v, int w){
     temp[1] = w;
     vector<vector<int> >::iterator itr;
     itr = find(this->adj[u].begin(),this->adj[u].end(),temp);
+    if(itr!=this->adj[u].end())
     this->adj[u].erase(itr);
+    else cout<<"none"<<endl;
+}
+
+void Graph::addEdge(int u,int v,int w){
+    vector<int> temp(2);
+    temp[0] = v;
+    temp[1] = w;
+    this->adj[u].push_back(temp);
 }
 
 int Graph::findWeight(int u, int v){
@@ -110,72 +119,137 @@ int Graph::findWeight(int u, int v){
 }
 
 void Graph::cycleBreaking(vector<vector<int> >& ans, int& cost){
+    Tree *forest = new Tree[this->V];
+    MakeSet(forest,this->V);
+    vector<vector<int> > edges(this->E);
+    vector<int> temp(3);
+    vector<int> MST;
+    for(int i=0;i<this->E;i++){
+        edges[i].reserve(3);
+    }
+    int count = 0;
     cost = 0;
-    // while(true){
-    //     vector<vector<int> > min_edge;
-    //     DFS(min_edge);
-    //     if(min_edge.size()==0) break;
-    //     vector<vector<int> >::iterator itr;
-    //     for(itr=min_edge.begin();itr!=min_edge.end();itr++){
-    //         ans.push_back(*itr);
-    //         cost+=(*itr)[2];
-    //         removeEdge((*itr)[0],(*itr)[1],(*itr)[2]);
-    //     }
-    // }
-    vector<vector<int> > min_edge;
-    DFS(min_edge);
-}
-
-
-void Graph::DFS(vector<vector<int> >& min_edge){
-    Vertex *vertices = new Vertex[this->V];
     for(int i=0;i<this->V;i++){
-        if(vertices[i].color==0)
-        DFS_back(i,vertices,min_edge);    
-    }
-}
-
-void Graph::DFS_back(int u, Vertex vertices[],vector<vector<int> >& min_edge){
-    if(vertices[u].color==2){
-        return;
-    }
-    else if(vertices[u].color==1){
-        int node = vertices[u].pi;
-        vector<int> cycle;
-        cycle.push_back(u);
-        while(node!=u){
-            cycle.push_back(node);
-            node = vertices[node].pi;
+        for(int j=0;j<this->adj[i].size();j++){
+            edges[count][0] = i;
+            edges[count][1] = this->adj[i][j][0];
+            edges[count][2] = this->adj[i][j][1];
+            cost += this->adj[i][j][1];
+            count+=1;
         }
-        cycle.push_back(u);
-        reverse(cycle.begin(),cycle.end());
-        int minW = 99999;
-        int from = 0;
-        int to = 0;
-        vector<int>::iterator itr;
-        for(itr=cycle.begin();itr!=cycle.end()-1;itr++){
-            int w = findWeight(*itr,*(itr+1));
-            if(w < minW && w!=0){
-                minW = w;
-                from = *(itr);
-                to = *(itr+1);
+    }
+    sort(edges.begin(),edges.end(),compare1);
+    for(int i=0;i<edges.size();i++){
+        int u = edges[i][0];
+        int v = edges[i][1];
+
+        if(FindSet(forest,u)!=FindSet(forest,v)){
+            MST.push_back(i);
+            Union(forest,u,v);
+        }
+    }
+    for(int i=0;i<this->V;i++){
+        this->adj[i].clear();
+    }
+    vector<int> adj_temp(2);
+    for(int i=0;i<MST.size();i++){
+        cost -= edges[MST[i]-i][2];
+        adj_temp[0] = edges[MST[i]-i][1];
+        adj_temp[1] = edges[MST[i]-i][2];
+        this->adj[edges[MST[i]-i][0]].push_back(adj_temp);
+        edges.erase(edges.begin()+MST[i]-i);
+    }
+    sort(edges.begin(),edges.end(),compare1);
+    vector<vector<int> >::iterator itr;
+    for(itr=edges.begin();itr!=edges.end();itr++){
+        if((*itr)[2]>0){
+            addEdge((*itr)[0],(*itr)[1],(*itr)[2]);
+            cost -= (*itr)[2];
+            if(cycleDetect()){
+                cost += (*itr)[2];
+                temp[0] = (*itr)[0];
+                temp[1] = (*itr)[1];
+                temp[2] = (*itr)[2];
+                ans.push_back(temp);
+                removeEdge((*itr)[0],(*itr)[1],(*itr)[2]);
             }
         }
-        min_edge.push_back({from,to,minW});
-        return;
-    }
-    else{
-        vertices[u].color = 1;
-        vector<vector<int> >::iterator itr;
-        for(itr = this->adj[u].begin();itr!=this->adj[u].end();itr++){
-            int v = (*itr)[0];
-            vertices[v].pi = u;
-            DFS_back(v,vertices,min_edge);
+        else{
+            temp[0] = (*itr)[0];
+            temp[1] = (*itr)[1];
+            temp[2] = (*itr)[2];
+            ans.push_back(temp);
         }
-        vertices[u].color = 2;
     }
+    this->E -= ans.size();
+    sort(ans.begin(),ans.end(),compare2);
 }
 
+
+bool Graph::cycleDetect(){
+    Vertex *vertices = new Vertex[this->V];
+    for(int i=0;i<this->V;i++){
+        if(vertices[i].color==0){
+            if(cycleDetect_DFS(i,vertices)==true)
+            return true;    
+        }
+    }
+    for(int i=0;i<this->V;i++){
+        if(vertices[i].color==3) return true;
+    }
+    return false;
+}
+
+bool Graph::cycleDetect_DFS(int u, Vertex vertices[]){
+    vertices[u].color = 1;
+    vector<vector<int> >::iterator itr;
+    for(itr=this->adj[u].begin();itr!=this->adj[u].end();itr++){
+        if(this->adj[u].size()==0){
+            vertices[u].color=3;
+            break;
+        } 
+        int v = (*itr)[0];
+        if(vertices[v].color==1)return true;
+        if(vertices[v].color==0 && cycleDetect_DFS(v,vertices))return true;
+    }
+    vertices[u].color = 2;
+    return false;
+}
+
+bool Graph::checkAns(){
+    if(cycleDetect()) return false;
+    Tree *forest = new Tree[this->V];
+    MakeSet(forest,this->V);
+    vector<vector<int> > edges(this->E);
+    vector<int> temp(3);
+    for(int i=0;i<this->E;i++){
+        edges[i].reserve(3);
+    }
+    int count = 0;
+    for(int i=0;i<this->V;i++){
+        for(int j=0;j<this->adj[i].size();j++){
+            if(this->adj[i].size()==0) break;
+            edges[count][0] = i;
+            edges[count][1] = this->adj[i][j][0];
+            edges[count][2] = this->adj[i][j][1];
+            count+=1;
+        }
+    }
+    sort(edges.begin(),edges.end(),compare1);
+    for(int i=0;i<edges.size();i++){
+        int u = edges[i][0];
+        int v = edges[i][1];
+
+        if(FindSet(forest,u)!=FindSet(forest,v)){
+            Union(forest,u,v);
+        }
+    }
+    int test = FindSet(forest,0);
+    for(int i=0;i<this->V;i++){
+        if(FindSet(forest,i)!=test) return false;
+    }
+    return true;
+}
 
 
 
