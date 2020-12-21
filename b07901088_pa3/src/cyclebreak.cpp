@@ -53,7 +53,7 @@ void Graph::reset(Vertex vertices[]){
     }
 }
 
-vector<vector<int> > Graph::Kruskal_MST(int &cost){
+void Graph::Kruskal_MST(vector<vector<int> >& ans,int &cost){
     Tree *forest = new Tree[this->V];
     MakeSet(forest,this->V);
     vector<vector<int> > edges(this->E);
@@ -73,7 +73,8 @@ vector<vector<int> > Graph::Kruskal_MST(int &cost){
             count+=1;
         }
     }
-    sort(edges.begin(),edges.end(),compare1);
+    // sort(edges.begin(),edges.end(),compare1);
+    countingSort(edges,2);
     for(int i=0;i<edges.size();i++){
         int u = edges[i][0];
         int v = edges[i][1];
@@ -87,10 +88,17 @@ vector<vector<int> > Graph::Kruskal_MST(int &cost){
         cost -= edges[MST[i]-i][2];
         edges.erase(edges.begin()+MST[i]-i);
     }
-    sort(edges.begin(),edges.end(),compare2);
-    return edges;
+    vector<vector<int> >::iterator itr;
+    // sort(edges.begin(),edges.end(),compare2);
+    for(itr=edges.begin();itr!=edges.end();itr++){
+        temp[0] = (*itr)[0];
+        temp[1] = (*itr)[1];
+        temp[2] = (*itr)[2];
+        ans.push_back(temp);
+    }
+    countingSort(ans,0);
 }
-
+//----------------------------------------------------------------------------------
 void Graph::removeEdge(int u, int v, int w){
     vector<int> temp(2);
     temp[0] = v;
@@ -138,7 +146,8 @@ void Graph::cycleBreaking(vector<vector<int> >& ans, int& cost){
             count+=1;
         }
     }
-    sort(edges.begin(),edges.end(),compare1);
+    // sort(edges.begin(),edges.end(),compare1);
+    countingSort(edges,2);
     for(int i=0;i<edges.size();i++){
         int u = edges[i][0];
         int v = edges[i][1];
@@ -159,7 +168,7 @@ void Graph::cycleBreaking(vector<vector<int> >& ans, int& cost){
         this->adj[edges[MST[i]-i][0]].push_back(adj_temp);
         edges.erase(edges.begin()+MST[i]-i);
     }
-    sort(edges.begin(),edges.end(),compare1);
+    // sort(edges.begin(),edges.end(),compare1);
     vector<vector<int> >::iterator itr;
     for(itr=edges.begin();itr!=edges.end();itr++){
         if((*itr)[2]>0){
@@ -182,7 +191,8 @@ void Graph::cycleBreaking(vector<vector<int> >& ans, int& cost){
         }
     }
     this->E -= ans.size();
-    sort(ans.begin(),ans.end(),compare2);
+    // sort(ans.begin(),ans.end(),compare2);
+    countingSort(ans,0);
 }
 
 
@@ -261,5 +271,65 @@ void Graph::printAdj(){
             cout<<" "<<this->adj[i][j][0]<<"("<<this->adj[i][j][1]<<")";
         }
         cout<<endl;
+    }
+}
+
+void Graph::countingSort(vector<vector<int> >& edges,int state){
+    if(edges.size()==0) return;
+    if(state==0){
+        vector<int> C(this->V,0);
+        vector<vector<int> > B;
+        B.reserve(edges.size());
+        for(int i=0;i<edges.size();i++){
+            B[i].reserve(3);
+        }
+        vector<vector<int> >::iterator itr;
+        for(itr=edges.begin();itr!=edges.end();itr++){
+            C[(*itr)[0]] += 1;
+        }
+        for(int i=1;i<this->V;i++){
+            C[i] = C[i-1] + C[i];
+        }
+        for(int i=edges.size()-1;i>=0;i--){
+            B[C[edges[i][0]]-1][0] = edges[i][0];
+            B[C[edges[i][0]]-1][1] = edges[i][1];
+            B[C[edges[i][0]]-1][2] = edges[i][2];
+            C[edges[i][0]] = C[edges[i][0]] - 1;
+        }
+        for(int i=0;i<edges.size();i++){
+            edges[i][0] = B[i][0];
+            edges[i][1] = B[i][1];
+            edges[i][2] = B[i][2];
+        }
+        // for(itr=edges.begin();itr!=edges.end();itr++){
+        //     cout<<(*itr)[0]<<" "<<(*itr)[1]<<" "<<(*itr)[2]<<endl;
+        // }
+    }
+    if(state==2){
+        vector<int> C(201,0);
+        vector<vector<int> > B;
+        B.reserve(edges.size());
+        for(int i=0;i<edges.size();i++){
+            B[i].reserve(3);
+        }
+        vector<vector<int> >::iterator itr;
+        for(itr=edges.begin();itr!=edges.end();itr++){
+            C[(*itr)[2]+100] += 1;
+        }
+        for(int i=1;i<201;i++){
+            C[i] = C[i-1] + C[i];
+        }
+        for(int i=edges.size()-1;i>=0;i--){
+            B[C[edges[i][2]+100]-1][0] = edges[i][0];
+            B[C[edges[i][2]+100]-1][1] = edges[i][1];
+            B[C[edges[i][2]+100]-1][2] = edges[i][2];
+            C[edges[i][2]+100] = C[edges[i][2]+100] - 1;
+        }
+        for(int i=0;i<edges.size();i++){
+            edges[i][0] = B[edges.size()-i-1][0];
+            edges[i][1] = B[edges.size()-i-1][1];
+            edges[i][2] = B[edges.size()-i-1][2];
+            
+        }
     }
 }

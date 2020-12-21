@@ -34,7 +34,7 @@ int main(int argc,char* argv[]){
     // ----------------------------------------read file-------------------------------------
     vector<vector<int> > ans;
     if(dir=='u'){
-        ans = g.Kruskal_MST(cost);
+        g.Kruskal_MST(ans,cost);
     }
     if(dir=='d'){
         g.cycleBreaking(ans,cost);
@@ -45,8 +45,9 @@ int main(int argc,char* argv[]){
     vector<vector<int> >::iterator itr;
     for(itr=ans.begin();itr!=ans.end();itr++){
         if(ans.size()==0) break;
-        fout<<(*itr)[0]<<" "<<(*itr)[1]<<" "<<(*itr)[2]<<endl;
+        fout<<(*itr)[0]<<" "<<(*itr)[1]<<" "<<(*itr)[2]<<endl;    
     }
     fout.close();
+    
     return 0;
 }

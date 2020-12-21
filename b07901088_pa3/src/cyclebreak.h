@@ -25,7 +25,7 @@ class Graph{
         Graph(int V,int E);
         ~Graph(){}
         vector<vector<vector<int> > > adj;
-        vector<vector<int> > Kruskal_MST(int&);
+        void Kruskal_MST(vector<vector<int> >&,int&);
         void printAdj();
         void removeEdge(int,int,int);
         bool cycleDetect();
@@ -35,6 +35,7 @@ class Graph{
         void cycleBreaking(vector<vector<int> >&,int&);
         void addEdge(int,int,int);
         bool checkAns();
+        void countingSort(vector<vector<int> >&, int);
 
     private:
         int V;
