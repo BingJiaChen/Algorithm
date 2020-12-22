@@ -246,7 +246,8 @@ bool Graph::checkAns(){
             count+=1;
         }
     }
-    sort(edges.begin(),edges.end(),compare1);
+    // sort(edges.begin(),edges.end(),compare1);
+    countingSort(edges,2);
     for(int i=0;i<edges.size();i++){
         int u = edges[i][0];
         int v = edges[i][1];
