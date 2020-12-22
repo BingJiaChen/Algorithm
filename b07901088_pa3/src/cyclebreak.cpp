@@ -115,6 +115,9 @@ void Graph::addEdge(int u,int v,int w){
     vector<int> temp(2);
     temp[0] = v;
     temp[1] = w;
+    vector<vector<int> >::iterator itr;
+    itr = find(this->adj[u].begin(),this->adj[u].end(),temp);
+    if(itr==this->adj[u].end())
     this->adj[u].push_back(temp);
 }
 

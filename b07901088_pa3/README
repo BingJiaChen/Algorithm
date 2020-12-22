@@ -1,0 +1,33 @@
+This is README file for Algorithm PA#2
+Author: <b07901088 陳秉嘉>
+Date: 2020/12/22
+=====
+SYNOPSIS:
+
+./cb <input_file_name> <output_file_name>
+
+This program is to break the cycle with using minimum weight.
+=====
+DIRECTORY:
+
+bin/	  executable binary
+doc/	  reports
+inputs/   input data
+outputs/  output result
+src/ 	  source C++ codes
+utility/  checker
+======
+HOW TO CIMPILE:
+
+Then compile the demo, simply follow the following steps
+	make
+======
+HOW TO RUN:
+
+	cd b07901088_pa3
+	./bin/cb <input_file_name> <output_file_name>
+	For example,
+	under b07901088_pa3
+	./bin/cb inputs/public_case_3.in outputs/case3.out
+======
+OTHER NOTICE: none

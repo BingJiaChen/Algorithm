@@ -38,8 +38,9 @@ int main(int argc,char* argv[]){
     }
     if(dir=='d'){
         g.cycleBreaking(ans,cost);
-        if(g.checkAns()) cout<<"cycle breaking completly !!!"<<endl;
-        else cout<<"There are something wrong..."<<endl;
+        // if(g.checkAns()) cout<<"cycle breaking completly !!!"<<endl;
+        // else cout<<"There are something wrong..."<<endl;
+        // g.printAdj();
     }
     fout<<cost<<endl;
     vector<vector<int> >::iterator itr;
