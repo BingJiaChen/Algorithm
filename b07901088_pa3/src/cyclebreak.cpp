@@ -73,8 +73,8 @@ void Graph::Kruskal_MST(vector<vector<int> >& ans,int &cost){
             count+=1;
         }
     }
-    // sort(edges.begin(),edges.end(),compare1);
-    countingSort(edges,2);
+    sort(edges.begin(),edges.end(),compare1);
+    // countingSort(edges,2);
     for(int i=0;i<edges.size();i++){
         int u = edges[i][0];
         int v = edges[i][1];
@@ -89,14 +89,14 @@ void Graph::Kruskal_MST(vector<vector<int> >& ans,int &cost){
         edges.erase(edges.begin()+MST[i]-i);
     }
     vector<vector<int> >::iterator itr;
-    // sort(edges.begin(),edges.end(),compare2);
     for(itr=edges.begin();itr!=edges.end();itr++){
         temp[0] = (*itr)[0];
         temp[1] = (*itr)[1];
         temp[2] = (*itr)[2];
         ans.push_back(temp);
     }
-    countingSort(ans,0);
+    sort(ans.begin(),ans.end(),compare2);
+    // countingSort(ans,0);
     
 }
 //----------------------------------------------------------------------------------
@@ -150,8 +150,8 @@ void Graph::cycleBreaking(vector<vector<int> >& ans, int& cost){
             count+=1;
         }
     }
-    // sort(edges.begin(),edges.end(),compare1);
-    countingSort(edges,2);
+    sort(edges.begin(),edges.end(),compare1);
+    // countingSort(edges,2);
     for(int i=0;i<edges.size();i++){
         int u = edges[i][0];
         int v = edges[i][1];
@@ -195,8 +195,8 @@ void Graph::cycleBreaking(vector<vector<int> >& ans, int& cost){
         }
     }
     this->E -= ans.size();
-    // sort(ans.begin(),ans.end(),compare2);
-    countingSort(ans,0);
+    sort(ans.begin(),ans.end(),compare2);
+    // countingSort(ans,0);
 }
 
 
@@ -249,8 +249,8 @@ bool Graph::checkAns(){
             count+=1;
         }
     }
-    // sort(edges.begin(),edges.end(),compare1);
-    countingSort(edges,2);
+    sort(edges.begin(),edges.end(),compare1);
+    // countingSort(edges,2);
     for(int i=0;i<edges.size();i++){
         int u = edges[i][0];
         int v = edges[i][1];
